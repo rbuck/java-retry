@@ -77,3 +77,31 @@ try {
     // ... do something to handle or log ... 
 }
 ```
+
+# Building and Releasing
+
+To compile and test the project issue the following commands:
+
+    mvn clean install
+
+To release the project issue the following commands:
+
+    mvn release:clean
+    mvn release:prepare
+    mvn release:perform
+
+# Linking
+
+This project has been released to Maven Central; to use it simply include this
+in your Maven POM file:
+
+    <dependency>
+        <groupId>com.github.rbuck</groupId>
+        <artifactId>java-retry</artifactId>
+        <version>1.0</version>
+        <scope>compile</scope>
+    </dependency>
+
+# License
+
+This project is Apache 2.0 licensed.
