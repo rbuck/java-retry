@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.github.rbuck</groupId>
-    <artifactId>enterprise-retry-4j</artifactId>
+    <artifactId>java-retry</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>enterprise-retry-4j</name>
+    <name>java-retry</name>
 
-    <url>https://github.com/rbuck/enterprise-retry-4j</url>
+    <url>https://github.com/rbuck/java-retry</url>
 
     <description>
         Lets developers make their applications more resilient by adding robust
@@ -27,9 +27,9 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:git@github.com:rbuck/enterprise-retry-4j.git</connection>
-        <developerConnection>scm:git:git@github.com:rbuck/enterprise-retry-4j.git</developerConnection>
-        <url>https://github.com/rbuck/enterprise-retry-4j</url>
+        <connection>scm:git:git@github.com:rbuck/java-retry.git</connection>
+        <developerConnection>scm:git:git@github.com:rbuck/java-retry.git</developerConnection>
+        <url>https://github.com/rbuck/java-retry</url>
         <tag>HEAD</tag>
     </scm>
     <developers>

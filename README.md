@@ -1,6 +1,6 @@
-# Enterprise Retry 4J
+# Java Retry
 
-[<img src="https://travis-ci.org/rbuck/enterprise-retry-4j.svg?branch=master" alt="Build Status" />](http://travis-ci.org/rbuck/enterprise-retry-4j)
+[<img src="https://travis-ci.org/rbuck/java-retry.svg?branch=master" alt="Build Status" />](http://travis-ci.org/rbuck/java-retry)
 
 Lets developers make their applications more resilient by adding robust
 transient fault handling logic. Transient faults are errors that occur
