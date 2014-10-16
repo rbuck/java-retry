@@ -78,7 +78,7 @@ try {
 }
 ```
 
-# Building and Releasing
+## Building and Releasing
 
 To compile and test the project issue the following commands:
 
@@ -90,7 +90,7 @@ To release the project issue the following commands:
     mvn release:prepare
     mvn release:perform
 
-# Linking
+## Linking
 
 This project has been released to Maven Central; to use it simply include this
 in your Maven POM file:
@@ -102,6 +102,6 @@ in your Maven POM file:
         <scope>compile</scope>
     </dependency>
 
-# License
+## License
 
 This project is Apache 2.0 licensed.
