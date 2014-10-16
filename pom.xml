@@ -27,7 +27,6 @@
         </license>
     </licenses>
     <scm>
-        git@github.com:rbuck/enterprise-retry-4j.git
         <connection>scm:git:git@github.com:rbuck/enterprise-retry-4j.git</connection>
         <developerConnection>scm:git:git@github.com:rbuck/enterprise-retry-4j.git</developerConnection>
         <url>https://github.com/rbuck/enterprise-retry-4j</url>
