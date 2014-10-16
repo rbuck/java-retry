@@ -1,4 +1,4 @@
-# NuoDB Practices
+# Enterprise Retry 4J
 
 [<img src="https://travis-ci.org/rbuck/enterprise-retry-4j.svg?branch=master" alt="Build Status" />](http://travis-ci.org/rbuck/enterprise-retry-4j)
 
