@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Enterprise Retry 4J : Lets developers make their applications more resilient by adding robust transient fault handling logic.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Enterprise Retry 4J</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/rbuck/enterprise-retry-4j">View on GitHub</a>
+
+          <h1 id="project_title">Enterprise Retry 4J</h1>
+          <h2 id="project_tagline">Lets developers make their applications more resilient by adding robust transient fault handling logic.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/rbuck/enterprise-retry-4j/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/rbuck/enterprise-retry-4j/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a name="nuodb-practices" class="anchor" href="#nuodb-practices"><span class="octicon octicon-link"></span></a>NuoDB Practices</h1>
+
+<p><a href="http://travis-ci.org/rbuck/enterprise-retry-4j"><img src="https://travis-ci.org/rbuck/enterprise-retry-4j.svg?branch=master" alt="Build Status"></a></p>
+
+<p>Lets developers make their applications more resilient by adding robust
+transient fault handling logic. Transient faults are errors that occur
+because of some temporary condition such as network connectivity issues
+or service unavailability. Typically, if you retry the operation that
+resulted in a transient error a short time later, you find that the
+error has disappeared.</p>
+
+<h2>
+<a name="retry" class="anchor" href="#retry"><span class="octicon octicon-link"></span></a>Retry</h2>
+
+<p>Infrastructure exists to facilitate automatic transaction retry, and exception
+detectors are written to properly handle a variety of SQLException types, so that
+retry occurs during transient exceptions, not others.</p>
+
+<p>Retry has been implemented in a generic fashion so as to be pluggable in a number
+of other non-SQL enterprise scenarios; so long as an exception detector is
+appropriately written, business level activities can be written in a fault
+tolerant manner.</p>
+
+<h3>
+<a name="generic-retry-example" class="anchor" href="#generic-retry-example"><span class="octicon octicon-link"></span></a>Generic Retry Example</h3>
+
+<p>Here is an example of your basic non-SQL retry loop:</p>
+
+<div class="highlight highlight-java"><pre><span class="c1">// the detector may optionally be a singleton...</span>
+<span class="n">TransientExceptionDetector</span> <span class="n">detector</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">TransientExceptionDetector</span><span class="o">()</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isTransient</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">// check exception type or content...</span>
+    <span class="o">}</span>
+<span class="o">};</span>
+<span class="c1">// the retry policy and strategies are allocated per transaction</span>
+<span class="c1">// and cannot be singletons, are typed...</span>
+<span class="n">RetryPolicy</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">retryPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RetryPolicy</span><span class="o">&lt;&gt;(</span><span class="k">new</span> <span class="nf">ExponentialBackoff</span><span class="o">(),</span> <span class="n">detector</span><span class="o">);</span>
+<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+<span class="k">try</span> <span class="o">{</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">retryPolicy</span><span class="o">.</span><span class="na">action</span><span class="o">(</span><span class="k">new</span> <span class="n">Callable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">call</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="mi">5</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">});</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// ... do something to handle or log ...</span>
+<span class="o">}</span>
+</pre></div>
+
+<p>There are a few actors on stage here:</p>
+
+<ul>
+<li>the transient exception detector (returns true if the exception is a transient)</li>
+<li>the retry policy (consistently applied policy)</li>
+<li>the retry strategy (provides pluggable retry behaviors)</li>
+<li>the callable (the action to be executed with retry capabilities)</li>
+</ul>
+
+<h3>
+<a name="sql-retry-example" class="anchor" href="#sql-retry-example"><span class="octicon octicon-link"></span></a>SQL Retry Example</h3>
+
+<p>Here is an example of your basic SQL retry loop:</p>
+
+<div class="highlight highlight-java"><pre><span class="n">SqlTransactionContext</span> <span class="n">sqlTransactionContext</span> <span class="o">=</span> <span class="k">new</span> <span class="o">...</span>
+<span class="n">SqlRetryPolicy</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">sqlRetryPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SqlRetryPolicy</span><span class="o">&lt;&gt;(</span>
+    <span class="k">new</span> <span class="nf">FixedInterval</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">),</span> <span class="n">sqlTransactionContext</span><span class="o">);</span>
+<span class="k">try</span> <span class="o">{</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">sqlRetryPolicy</span><span class="o">.</span><span class="na">action</span><span class="o">(</span><span class="k">new</span> <span class="n">SqlCallable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
+        <span class="nd">@Override</span>
+        <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">call</span><span class="o">(</span><span class="n">Connection</span> <span class="n">connection</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">SQLException</span> <span class="o">{</span>
+            <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="o">...</span> <span class="n">from</span> <span class="n">SQL</span> <span class="n">result</span> <span class="n">set</span> <span class="o">...</span>
+            <span class="c1">// critical: make sure to use try-with-resources to</span>
+            <span class="c1">// properly close all statements and result sets! </span>
+            <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">});</span>
+<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// ... do something to handle or log ... </span>
+<span class="o">}</span>
+</pre></div>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Enterprise Retry 4J maintained by <a href="https://github.com/rbuck">rbuck</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
