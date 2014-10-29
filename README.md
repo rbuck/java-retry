@@ -1,8 +1,8 @@
 # Java Retry
 
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry)
-
 [<img src="https://travis-ci.org/rbuck/java-retry.svg?branch=master" alt="Build Status" />](http://travis-ci.org/rbuck/java-retry)
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry)
 
 Lets developers make their applications more resilient by adding robust
 transient fault handling logic. Transient faults are errors that occur
