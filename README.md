@@ -86,57 +86,57 @@ The following Spring Bean definition snippet was used in a Mule ESB
 flow to enforce comprehensive resiliency for a subscriptions service.
 
 ```xml
-	<spring:beans>
-		<spring:bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-			<spring:property name="driverClassName" value="com.nuodb.jdbc.Driver" />
-			<spring:property name="jdbcUrl"
-				value="jdbc:com.nuodb://localhost/subscribers?schema=subs" />
-			<spring:property name="username" value="dba" />
-			<spring:property name="password" value="dba" />
-			<spring:property name="autoCommit" value="true" />
-			<spring:property name="readOnly" value="false" />
-			<spring:property name="connectionTestQuery" value="SELECT 1 FROM DUAL" />
-			<spring:property name="maximumPoolSize" value="100" />
-			<spring:property name="maxLifetime" value="120000" />
-			<spring:property name="isolateInternalQueries" value="true" />
-			<spring:property name="transactionIsolation" value="TRANSACTION_READ_COMMITTED" />
-		</spring:bean>
+<spring:beans>
+    <spring:bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+        <spring:property name="driverClassName" value="com.nuodb.jdbc.Driver" />
+        <spring:property name="jdbcUrl"
+            value="jdbc:com.nuodb://localhost/subscribers?schema=subs" />
+        <spring:property name="username" value="dba" />
+        <spring:property name="password" value="dba" />
+        <spring:property name="autoCommit" value="true" />
+        <spring:property name="readOnly" value="false" />
+        <spring:property name="connectionTestQuery" value="SELECT 1 FROM DUAL" />
+        <spring:property name="maximumPoolSize" value="100" />
+        <spring:property name="maxLifetime" value="120000" />
+        <spring:property name="isolateInternalQueries" value="true" />
+        <spring:property name="transactionIsolation" value="TRANSACTION_READ_COMMITTED" />
+    </spring:bean>
 
-		<spring:bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
-			<spring:constructor-arg ref="hikariConfig" />
-		</spring:bean>
+    <spring:bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">
+        <spring:constructor-arg ref="hikariConfig" />
+    </spring:bean>
 
-		<!--
-		Wraps a connection provider, in this case simply a DataSource.
-		-->
-		<spring:bean id="transactionContext"
-			class="com.github.rbuck.retry.BasicSqlTransactionContext">
-			<spring:constructor-arg ref="dataSource" />
-		</spring:bean>
+    <!--
+    Wraps a connection provider, in this case simply a DataSource.
+    -->
+    <spring:bean id="transactionContext"
+        class="com.github.rbuck.retry.BasicSqlTransactionContext">
+        <spring:constructor-arg ref="dataSource" />
+    </spring:bean>
 
-		<!--
-		Default of 10 retries at most, binary exponential back-off,
-		starts at 1 second, progresses to 10 seconds each. 
-		-->
-		<spring:bean id="retryStrategy"
-			class="com.github.rbuck.retry.ExponentialBackoff" />
+    <!--
+    Default of 10 retries at most, binary exponential back-off,
+    starts at 1 second, progresses to 10 seconds each. 
+    -->
+    <spring:bean id="retryStrategy"
+        class="com.github.rbuck.retry.ExponentialBackoff" />
 
-		<!-- 
-		The retry policy implements the retry strategy for SQL transactions
-		within the subscriptions service.
-		-->
-		<spring:bean id="sqlRetryPolicy"
-			class="com.github.rbuck.retry.SqlRetryPolicy">
-			<spring:constructor-arg ref="retryStrategy" />
-			<spring:constructor-arg ref="transactionContext" />
-		</spring:bean>
+    <!-- 
+    The retry policy implements the retry strategy for SQL transactions
+    within the subscriptions service.
+    -->
+    <spring:bean id="sqlRetryPolicy"
+        class="com.github.rbuck.retry.SqlRetryPolicy">
+        <spring:constructor-arg ref="retryStrategy" />
+        <spring:constructor-arg ref="transactionContext" />
+    </spring:bean>
 
-		<spring:bean id="SubscriberBean" class="com.nuodb.samples.mule.SubscriberImpl">
-			<spring:property name="retryPolicy">
-				<spring:ref local="sqlRetryPolicy" />
-			</spring:property>
-		</spring:bean>
-	</spring:beans>
+    <spring:bean id="SubscriberBean" class="com.nuodb.samples.mule.SubscriberImpl">
+        <spring:property name="retryPolicy">
+            <spring:ref local="sqlRetryPolicy" />
+        </spring:property>
+    </spring:bean>
+</spring:beans>
 ```
 
 ## Building and Releasing
