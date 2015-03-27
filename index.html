@@ -31,15 +31,17 @@
         </header>
     </div>
 
+
     <!-- MAIN CONTENT -->
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
+
         <h1>
 <a id="java-retry" class="anchor" href="#java-retry" aria-hidden="true"><span class="octicon octicon-link"></span></a>Java Retry</h1>
 
-<p><a href="https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry"><img src="https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry/badge.svg" alt="Maven Central"></a></p>
+<a href="https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry"><img src="https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry/badge.svg" alt="Maven Central"></a>
 
-<p><a href="http://travis-ci.org/rbuck/java-retry"><img src="https://travis-ci.org/rbuck/java-retry.svg?branch=master" alt="Build Status"></a></p>
+<a href="http://travis-ci.org/rbuck/java-retry"><img src="https://travis-ci.org/rbuck/java-retry.svg?branch=master" alt="Build Status"></a></p>
 
 <p>Lets developers make their applications more resilient by adding robust
 transient fault handling logic. Transient faults are errors that occur
@@ -48,8 +50,18 @@ or service unavailability. Typically, if you retry the operation that
 resulted in a transient error a short time later, you find that the
 error has disappeared.</p>
 
+          <h2>
+              <a id="user-content-table-of-contents" class="anchor" href="#table-of-contents" aria-hidden="true"><span class="octicon octicon-link"></span></a>Table of contents</h2>
+
+          <ul class="task-list">
+              <li><a href="#description">Description</a></li>
+              <li><a href="#generic-retry-example">Generic Retry Example</a></li>
+              <li><a href="#sql-retry-example">SQL Retry Example</a></li>
+              <li><a href="#spring-integration">Spring Integration Example</a></li>
+          </ul>
+
 <h2>
-<a id="retry" class="anchor" href="#retry" aria-hidden="true"><span class="octicon octicon-link"></span></a>Retry</h2>
+<a id="retry" class="anchor" href="#description" aria-hidden="true"><span class="octicon octicon-link"></span></a>Description</h2>
 
 <p>Infrastructure exists to facilitate automatic transaction retry, and exception
 detectors are written to properly handle a variety of SQLException types, so that
