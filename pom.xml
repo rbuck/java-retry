@@ -29,7 +29,7 @@
         <connection>scm:git:git@github.com:rbuck/java-retry.git</connection>
         <developerConnection>scm:git:git@github.com:rbuck/java-retry.git</developerConnection>
         <url>https://github.com/rbuck/java-retry</url>
-        <tag>v1.1</tag>
+        <tag>v1.0</tag>
     </scm>
     <developers>
         <developer>
