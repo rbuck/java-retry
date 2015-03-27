@@ -14,6 +14,7 @@ import java.util.concurrent.Callable;
 public class RetryPolicyTest {
 
     private int retryCount = 0;
+    private int eventCount = 0;
 
     @Test
     public void testRetryEventListenerIsNull() {
@@ -44,6 +45,7 @@ public class RetryPolicyTest {
             @Override
             public void onRetry(RetryEvent evt) {
                 retryCount = evt.getRetryCount();
+                eventCount++;
             }
         };
         RetryPolicy<Integer> retryPolicy = new RetryPolicy<>(new ExponentialBackoff(3), detector);
@@ -62,6 +64,7 @@ public class RetryPolicyTest {
             }
         }
         Assert.assertTrue(thrown);
+        Assert.assertEquals("event count", 4, eventCount);
         Assert.assertEquals("retry count", 3, retryCount);
     }
 
@@ -207,5 +210,38 @@ public class RetryPolicyTest {
         Assert.assertFalse("retry success, no throw", thrown);
         Assert.assertEquals("retry count", 1, retryCount);
         Assert.assertEquals("retry result", 5, result);
+    }
+
+    @Test
+    public void testRetryPolicyReuse() throws Exception {
+        TransientExceptionDetector detector = new TransientExceptionDetector() {
+            @Override
+            public boolean isTransient(Exception e) {
+                return e instanceof IllegalArgumentException;
+            }
+        };
+        RetryEventListener retryEventListener = new RetryEventListener() {
+            @Override
+            public void onRetry(RetryEvent evt) {
+                retryCount = evt.getRetryCount();
+                eventCount++;
+            }
+        };
+        RetryPolicy<Integer> retryPolicy = new RetryPolicy<>(new FixedInterval(3, 100), detector);
+        retryPolicy.addRetryEventListener(retryEventListener);
+
+        for (int i = 0; i < 10; i++) {
+            try {
+                retryPolicy.action(new Callable<Integer>() {
+                    @Override
+                    public Integer call() throws Exception {
+                        throw new IllegalArgumentException();
+                    }
+                });
+            } catch (Exception ignore) {
+            }
+        }
+        Assert.assertEquals("event count", 40, eventCount);
+        Assert.assertEquals("retry count", 3, retryCount);
     }
 }

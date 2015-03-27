@@ -3,6 +3,8 @@ package com.github.rbuck.retry;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import static com.github.rbuck.retry.RetryState.RetryStateCommon.addDelay;
+
 /**
  * Implements truncated binary exponential backoff to calculate retry delay per
  * IEEE 802.3-2008 Section 1. There will be at most ten (10) contention periods
@@ -22,7 +24,6 @@ public class ExponentialBackoff implements RetryStrategy {
     private final long minBackoff;
     private final long maxBackoff;
     private final long slotTime;
-    private int retryCount;
 
     public ExponentialBackoff() {
         this(DEFAULT_RETRY_COUNT, DEFAULT_MIN_BACKOFF, DEFAULT_MAX_BACKOFF, DEFAULT_SLOT_TIME);
@@ -41,24 +42,35 @@ public class ExponentialBackoff implements RetryStrategy {
     }
 
     @Override
-    public boolean permitsRetry() {
-        if (retryCount < maxRetries) {
-            retryCount++;
-            return true;
-        }
-        return false;
+    public RetryState getRetryState() {
+        return new RetryState() {
 
+            private int retryCount;
+
+            @Override
+            public void delayRetry() {
+                addDelay(getRetryDelay());
+            }
+
+            @Override
+            public boolean hasRetries() {
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public int getRetryCount() {
+                return retryCount;
+            }
+
+            @Override
+            public long getRetryDelay() {
+                final int MAX_CONTENTION_PERIODS = 10;
+                return retryCount == 0 ? 0 : Math.min(minBackoff + random.nextInt(2 << Math.min(retryCount, MAX_CONTENTION_PERIODS - 1)) * slotTime, maxBackoff);
+            }
+        };
     }
-
-    @Override
-    public long getRetryDelay() {
-        final int MAX_CONTENTION_PERIODS = 10;
-        return retryCount == 0 ? 0 : Math.min(minBackoff + random.nextInt(2 << Math.min(retryCount, MAX_CONTENTION_PERIODS - 1)) * slotTime, maxBackoff);
-    }
-
-    @Override
-    public int getRetryCount() {
-        return retryCount;
-    }
-
 }

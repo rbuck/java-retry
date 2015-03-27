@@ -7,21 +7,19 @@ package com.github.rbuck.retry;
  */
 public class RetryEvent extends java.util.EventObject {
 
-    private final int retryCount;
-    private final long retryDelay;
+    private final RetryState state;
     private final Exception cause;
 
     /**
      * Constructs a prototypical Event.
      *
-     * @param source     The object on which the Event initially occurred.
-     * @param retryDelay the delay for which the next retry will occur
+     * @param source The object on which the Event initially occurred.
+     * @param state  the retry state
      * @throws IllegalArgumentException if source is null.
      */
-    public RetryEvent(Object source, int retryCount, long retryDelay, Exception cause) {
+    public RetryEvent(Object source, RetryState state, Exception cause) {
         super(source);
-        this.retryCount = retryCount;
-        this.retryDelay = retryDelay;
+        this.state = state;
         this.cause = cause;
     }
 
@@ -31,11 +29,11 @@ public class RetryEvent extends java.util.EventObject {
     }
 
     public int getRetryCount() {
-        return retryCount;
+        return state.getRetryCount();
     }
 
     public long getRetryDelay() {
-        return retryDelay;
+        return state.getRetryDelay();
     }
 
     public Exception getCause() {

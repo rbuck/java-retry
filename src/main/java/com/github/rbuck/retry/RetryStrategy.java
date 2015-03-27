@@ -6,23 +6,10 @@ package com.github.rbuck.retry;
  * @author Robert Buck (buck.robert.j@gmail.com)
  */
 public interface RetryStrategy {
-
     /**
-     * Implements the retry policy.
+     * Creates a prototype state every time a request is made.
      *
-     * @return true if more retries are permitted, otherwise false
+     * @return instance of retry state
      */
-    boolean permitsRetry();
-
-    /**
-     * Get the retry interval to sleep for.
-     *
-     * @return the retry interval in milliseconds
-     */
-    long getRetryDelay();
-
-    /**
-     * Gets the current retry count.
-     */
-    int getRetryCount();
+    RetryState getRetryState();
 }

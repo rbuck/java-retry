@@ -1,5 +1,7 @@
 package com.github.rbuck.retry;
 
+import static com.github.rbuck.retry.RetryState.RetryStateCommon.addDelay;
+
 /**
  * Represents a fixed interval RetryStrategy whose time interval is fixed.
  *
@@ -9,7 +11,6 @@ public class FixedInterval implements RetryStrategy {
 
     private final int maxRetries;
     private final long retryInterval;
-    private int retryCount;
 
     public FixedInterval(int maxRetries, long retryInterval) {
         this.maxRetries = maxRetries;
@@ -17,22 +18,34 @@ public class FixedInterval implements RetryStrategy {
     }
 
     @Override
-    public boolean permitsRetry() {
-        if (retryCount < maxRetries) {
-            retryCount++;
-            return true;
-        }
-        return false;
-    }
+    public RetryState getRetryState() {
+        return new RetryState() {
 
-    @Override
-    public long getRetryDelay() {
-        return retryInterval;
-    }
+            private int retryCount;
 
-    @Override
-    public int getRetryCount() {
-        return retryCount;
-    }
+            @Override
+            public void delayRetry() {
+                addDelay(getRetryDelay());
+            }
 
+            @Override
+            public boolean hasRetries() {
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public int getRetryCount() {
+                return retryCount;
+            }
+
+            @Override
+            public long getRetryDelay() {
+                return retryInterval;
+            }
+        };
+    }
 }

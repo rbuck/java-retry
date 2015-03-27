@@ -34,6 +34,7 @@ public class RetryPolicy<V> {
      */
     public V action(Callable<V> callable) throws Exception {
         Exception re;
+        RetryState retryState = retryStrategy.getRetryState();
         do {
             try {
                 return callable.call();
@@ -43,18 +44,10 @@ public class RetryPolicy<V> {
                     throw e;
                 }
             }
-            enqueueRetryEvent(new RetryEvent(this, retryStrategy.getRetryCount(), retryStrategy.getRetryDelay(), re));
-            delayRetry(retryStrategy.getRetryDelay());
-        } while (retryStrategy.permitsRetry());
+            enqueueRetryEvent(new RetryEvent(this, retryState, re));
+            retryState.delayRetry();
+        } while (retryState.hasRetries());
         throw re;
-    }
-
-    private void delayRetry(long delay) {
-        try {
-            Thread.sleep(delay);
-        } catch (InterruptedException e) {
-            Thread.interrupted();
-        }
     }
 
     private RetryEventListener[] retryListeners = new RetryEventListener[0];

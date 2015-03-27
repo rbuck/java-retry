@@ -1,5 +1,7 @@
 package com.github.rbuck.retry;
 
+import static com.github.rbuck.retry.RetryState.RetryStateCommon.addDelay;
+
 /**
  * Implementation for an incremental retry strategy with fixed initial and
  * incremental wait times.
@@ -11,7 +13,6 @@ public class Incremental implements RetryStrategy {
     private final int maxRetries;
     private final long initialInterval;
     private final long incrementalInterval;
-    private int retryCount;
 
     public Incremental(int maxRetries, long initialInterval, long incrementalInterval) {
         this.maxRetries = maxRetries;
@@ -20,21 +21,34 @@ public class Incremental implements RetryStrategy {
     }
 
     @Override
-    public boolean permitsRetry() {
-        if (retryCount < maxRetries) {
-            retryCount++;
-            return true;
-        }
-        return false;
-    }
+    public RetryState getRetryState() {
+        return new RetryState() {
 
-    @Override
-    public long getRetryDelay() {
-        return initialInterval + incrementalInterval * retryCount;
-    }
+            private int retryCount;
 
-    @Override
-    public int getRetryCount() {
-        return retryCount;
+            @Override
+            public void delayRetry() {
+                addDelay(getRetryDelay());
+            }
+
+            @Override
+            public boolean hasRetries() {
+                if (retryCount < maxRetries) {
+                    retryCount++;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public int getRetryCount() {
+                return retryCount;
+            }
+
+            @Override
+            public long getRetryDelay() {
+                return initialInterval + incrementalInterval * retryCount;
+            }
+        };
     }
 }
