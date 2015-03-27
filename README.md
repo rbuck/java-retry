@@ -165,13 +165,13 @@ return retryPolicy.action(new SqlCallable<String>() {
 
 To compile and test the project issue the following commands:
 
-```bash
+```shell
     mvn clean install
 ```
 
 To release the project issue the following commands:
 
-```bash
+```shell
     mvn release:clean
     mvn release:prepare
     mvn release:perform
