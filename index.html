@@ -67,8 +67,7 @@ tolerant manner.</p>
         <span class="c1">// check exception type or content...</span>
     <span class="o">}</span>
 <span class="o">};</span>
-<span class="c1">// the retry policy and strategies are allocated per transaction</span>
-<span class="c1">// and cannot be singletons, are typed...</span>
+<span class="c1">// the retry policy and strategies may be allocated as singletons</span>
 <span class="n">RetryPolicy</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">retryPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RetryPolicy</span><span class="o">&lt;&gt;(</span><span class="k">new</span> <span class="nf">ExponentialBackoff</span><span class="o">(),</span> <span class="n">detector</span><span class="o">);</span>
 <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
 <span class="k">try</span> <span class="o">{</span>
