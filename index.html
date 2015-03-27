@@ -4,11 +4,11 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Java Retry : Lets developers make their applications more resilient by adding robust transient fault handling logic.">
+    <meta name="description" content="Enterprise Retry 4J : Lets developers make their applications more resilient by adding robust transient fault handling logic.">
 
     <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
 
-    <title>Java Retry</title>
+    <title>Enterprise Retry 4J</title>
   </head>
 
   <body>
@@ -18,7 +18,7 @@
         <header class="inner">
           <a id="forkme_banner" href="https://github.com/rbuck/java-retry">View on GitHub</a>
 
-          <h1 id="project_title">Java Retry</h1>
+          <h1 id="project_title">Enterprise Retry 4J</h1>
           <h2 id="project_tagline">Lets developers make their applications more resilient by adding robust transient fault handling logic.</h2>
 
             <section id="downloads">
@@ -32,7 +32,9 @@
     <div id="main_content_wrap" class="outer">
       <section id="main_content" class="inner">
         <h1>
-<a name="nuodb-practices" class="anchor" href="#java-retry"><span class="octicon octicon-link"></span></a>NuoDB Practices</h1>
+<a id="java-retry" class="anchor" href="#java-retry" aria-hidden="true"><span class="octicon octicon-link"></span></a>Java Retry</h1>
+
+<p><a href="https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry"><img src="https://maven-badges.herokuapp.com/maven-central/com.github.rbuck/java-retry/badge.svg" alt="Maven Central"></a></p>
 
 <p><a href="http://travis-ci.org/rbuck/java-retry"><img src="https://travis-ci.org/rbuck/java-retry.svg?branch=master" alt="Build Status"></a></p>
 
@@ -44,7 +46,7 @@ resulted in a transient error a short time later, you find that the
 error has disappeared.</p>
 
 <h2>
-<a name="retry" class="anchor" href="#retry"><span class="octicon octicon-link"></span></a>Retry</h2>
+<a id="retry" class="anchor" href="#retry" aria-hidden="true"><span class="octicon octicon-link"></span></a>Retry</h2>
 
 <p>Infrastructure exists to facilitate automatic transaction retry, and exception
 detectors are written to properly handle a variety of SQLException types, so that
@@ -56,31 +58,30 @@ appropriately written, business level activities can be written in a fault
 tolerant manner.</p>
 
 <h3>
-<a name="generic-retry-example" class="anchor" href="#generic-retry-example"><span class="octicon octicon-link"></span></a>Generic Retry Example</h3>
+<a id="generic-retry-example" class="anchor" href="#generic-retry-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Generic Retry Example</h3>
 
 <p>Here is an example of your basic non-SQL retry loop:</p>
 
-<div class="highlight highlight-java"><pre><span class="c1">// the detector may optionally be a singleton...</span>
-<span class="n">TransientExceptionDetector</span> <span class="n">detector</span> <span class="o">=</span> <span class="k">new</span> <span class="nf">TransientExceptionDetector</span><span class="o">()</span> <span class="o">{</span>
-    <span class="nd">@Override</span>
-    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isTransient</span><span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-        <span class="c1">// check exception type or content...</span>
-    <span class="o">}</span>
-<span class="o">};</span>
-<span class="c1">// the retry policy and strategies may be allocated as singletons</span>
-<span class="n">RetryPolicy</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">retryPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">RetryPolicy</span><span class="o">&lt;&gt;(</span><span class="k">new</span> <span class="nf">ExponentialBackoff</span><span class="o">(),</span> <span class="n">detector</span><span class="o">);</span>
-<span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-<span class="k">try</span> <span class="o">{</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">retryPolicy</span><span class="o">.</span><span class="na">action</span><span class="o">(</span><span class="k">new</span> <span class="n">Callable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">call</span><span class="o">()</span> <span class="kd">throws</span> <span class="n">Exception</span> <span class="o">{</span>
-            <span class="k">return</span> <span class="mi">5</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">});</span>
-<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">// ... do something to handle or log ...</span>
-<span class="o">}</span>
-</pre></div>
+<div class="highlight highlight-java"><pre><span class="pl-c">// the detector may optionally be a singleton...</span>
+<span class="pl-smi">TransientExceptionDetector</span> detector <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-smi">TransientExceptionDetector</span>() {
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">isTransient</span>(<span class="pl-smi">Exception</span> <span class="pl-v">e</span>) {
+        <span class="pl-c">// check exception type or content...</span>
+    }
+};
+<span class="pl-c">// the retry policy and strategies may be allocated as singletons</span>
+<span class="pl-k">RetryPolicy&lt;<span class="pl-smi">Integer</span>&gt;</span> retryPolicy <span class="pl-k">=</span> <span class="pl-k">new</span> <span class="pl-k">RetryPolicy&lt;&gt;</span>(<span class="pl-k">new</span> <span class="pl-smi">ExponentialBackoff</span>(), detector);
+<span class="pl-k">int</span> result <span class="pl-k">=</span> <span class="pl-c1">0</span>;
+<span class="pl-k">try</span> {
+    result <span class="pl-k">=</span> retryPolicy<span class="pl-k">.</span>action(<span class="pl-k">new</span> <span class="pl-k">Callable&lt;<span class="pl-smi">Integer</span>&gt;</span>() {
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-smi">Integer</span> <span class="pl-en">call</span>() <span class="pl-k">throws</span> <span class="pl-smi">Exception</span> {
+            <span class="pl-k">return</span> <span class="pl-c1">5</span>;
+        }
+    });
+} <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> e) {
+    <span class="pl-c">// ... do something to handle or log ...</span>
+}</pre></div>
 
 <p>There are a few actors on stage here:</p>
 
@@ -92,35 +93,146 @@ tolerant manner.</p>
 </ul>
 
 <h3>
-<a name="sql-retry-example" class="anchor" href="#sql-retry-example"><span class="octicon octicon-link"></span></a>SQL Retry Example</h3>
+<a id="sql-retry-example" class="anchor" href="#sql-retry-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>SQL Retry Example</h3>
 
 <p>Here is an example of your basic SQL retry loop:</p>
 
-<div class="highlight highlight-java"><pre><span class="n">SqlTransactionContext</span> <span class="n">sqlTransactionContext</span> <span class="o">=</span> <span class="k">new</span> <span class="o">...</span>
-<span class="n">SqlRetryPolicy</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;</span> <span class="n">sqlRetryPolicy</span> <span class="o">=</span> <span class="k">new</span> <span class="n">SqlRetryPolicy</span><span class="o">&lt;&gt;(</span>
-    <span class="k">new</span> <span class="nf">FixedInterval</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="mi">100</span><span class="o">),</span> <span class="n">sqlTransactionContext</span><span class="o">);</span>
-<span class="k">try</span> <span class="o">{</span>
-    <span class="n">result</span> <span class="o">=</span> <span class="n">sqlRetryPolicy</span><span class="o">.</span><span class="na">action</span><span class="o">(</span><span class="k">new</span> <span class="n">SqlCallable</span><span class="o">&lt;</span><span class="n">Integer</span><span class="o">&gt;()</span> <span class="o">{</span>
-        <span class="nd">@Override</span>
-        <span class="kd">public</span> <span class="n">Integer</span> <span class="nf">call</span><span class="o">(</span><span class="n">Connection</span> <span class="n">connection</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">SQLException</span> <span class="o">{</span>
-            <span class="kt">int</span> <span class="n">result</span> <span class="o">=</span> <span class="o">...</span> <span class="n">from</span> <span class="n">SQL</span> <span class="n">result</span> <span class="n">set</span> <span class="o">...</span>
-            <span class="c1">// critical: make sure to use try-with-resources to</span>
-            <span class="c1">// properly close all statements and result sets! </span>
-            <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
-        <span class="o">}</span>
-    <span class="o">});</span>
-<span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">Exception</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">// ... do something to handle or log ... </span>
-<span class="o">}</span>
-</pre></div>
+<div class="highlight highlight-java"><pre><span class="pl-smi">SqlTransactionContext</span> sqlTransactionContext <span class="pl-k">=</span> <span class="pl-k">new</span> ...
+<span class="pl-k">SqlRetryPolicy&lt;<span class="pl-smi">Integer</span>&gt;</span> sqlRetryPolicy = new <span class="pl-k">SqlRetryPolicy&lt;&gt;</span>(
+    <span class="pl-k">new</span> <span class="pl-smi">FixedInterval</span>(<span class="pl-c1">1</span>, <span class="pl-c1">100</span>), sqlTransactionContext);
+<span class="pl-k">try</span> {
+    result <span class="pl-k">=</span> sqlRetryPolicy<span class="pl-k">.</span>action(<span class="pl-k">new</span> <span class="pl-k">SqlCallable&lt;<span class="pl-smi">Integer</span>&gt;</span>() {
+        <span class="pl-k">@Override</span>
+        <span class="pl-k">public</span> <span class="pl-smi">Integer</span> <span class="pl-en">call</span>(<span class="pl-smi">Connection</span> <span class="pl-v">connection</span>) <span class="pl-k">throws</span> <span class="pl-smi">SQLException</span> {
+            <span class="pl-k">int</span> result <span class="pl-k">=</span> <span class="pl-c1">...</span> from <span class="pl-c1">SQL</span> result set <span class="pl-c1">...</span>
+            <span class="pl-c">// critical: make sure to use try-with-resources to</span>
+            <span class="pl-c">// properly close all statements and result sets! </span>
+            <span class="pl-k">return</span> result;
+        }
+    });
+} <span class="pl-k">catch</span> (<span class="pl-smi">Exception</span> e) {
+    <span class="pl-c">// ... do something to handle or log ... </span>
+}</pre></div>
+
+<h3>
+<a id="spring-integration" class="anchor" href="#spring-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Spring Integration</h3>
+
+<p>The following Spring Bean definition snippet was used in a Mule ESB
+flow to enforce comprehensive resiliency for a subscriptions service.
+The Spring Beans may be declared as singletons, and the code is thread
+safe.</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">beans</span>&gt;
+    &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>hikariConfig<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.zaxxer.hikari.HikariConfig<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>driverClassName<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>com.nuodb.jdbc.Driver<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>jdbcUrl<span class="pl-pds">"</span></span>
+            <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>jdbc:com.nuodb://localhost/subscribers?schema=subs<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>username<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>dba<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>password<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>dba<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>autoCommit<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>readOnly<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>false<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>connectionTestQuery<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>SELECT 1 FROM DUAL<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>maximumPoolSize<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>100<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>maxLifetime<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>120000<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>isolateInternalQueries<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>true<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>transactionIsolation<span class="pl-pds">"</span></span> <span class="pl-e">value</span>=<span class="pl-s"><span class="pl-pds">"</span>TRANSACTION_READ_COMMITTED<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span>&gt;
+
+    &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>dataSource<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.zaxxer.hikari.HikariDataSource<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">constructor-arg</span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>hikariConfig<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span>&gt;
+
+    <span class="pl-c">&lt;!--</span>
+<span class="pl-c">    Wraps a connection provider, in this case simply a DataSource.</span>
+<span class="pl-c">    --&gt;</span>
+    &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>transactionContext<span class="pl-pds">"</span></span>
+        <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.github.rbuck.retry.BasicSqlTransactionContext<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">constructor-arg</span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>dataSource<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span>&gt;
+
+    <span class="pl-c">&lt;!--</span>
+<span class="pl-c">    Default of 10 retries at most, binary exponential back-off,</span>
+<span class="pl-c">    starts at 1 second, progresses to 10 seconds each. </span>
+<span class="pl-c">    --&gt;</span>
+    &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>retryStrategy<span class="pl-pds">"</span></span>
+        <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.github.rbuck.retry.ExponentialBackoff<span class="pl-pds">"</span></span> /&gt;
+
+    <span class="pl-c">&lt;!-- </span>
+<span class="pl-c">    The retry policy implements the retry strategy for SQL transactions</span>
+<span class="pl-c">    within the subscriptions service.</span>
+<span class="pl-c">    --&gt;</span>
+    &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>sqlRetryPolicy<span class="pl-pds">"</span></span>
+        <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.github.rbuck.retry.SqlRetryPolicy<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">constructor-arg</span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>retryStrategy<span class="pl-pds">"</span></span> /&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">constructor-arg</span> <span class="pl-e">ref</span>=<span class="pl-s"><span class="pl-pds">"</span>transactionContext<span class="pl-pds">"</span></span> /&gt;
+    &lt;/<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span>&gt;
+
+    &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span> <span class="pl-e">id</span>=<span class="pl-s"><span class="pl-pds">"</span>SubscriberBean<span class="pl-pds">"</span></span> <span class="pl-e">class</span>=<span class="pl-s"><span class="pl-pds">"</span>com.nuodb.samples.mule.SubscriberImpl<span class="pl-pds">"</span></span>&gt;
+        &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span> <span class="pl-e">name</span>=<span class="pl-s"><span class="pl-pds">"</span>retryPolicy<span class="pl-pds">"</span></span>&gt;
+            &lt;<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">ref</span> <span class="pl-e">local</span>=<span class="pl-s"><span class="pl-pds">"</span>sqlRetryPolicy<span class="pl-pds">"</span></span> /&gt;
+        &lt;/<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">property</span>&gt;
+    &lt;/<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">bean</span>&gt;
+&lt;/<span class="pl-ent">spring</span><span class="pl-ent">:</span><span class="pl-ent">beans</span>&gt;</pre></div>
+
+<p>Then the corresponding Java code is simply:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-c1">...</span>
+<span class="pl-k">return</span> retryPolicy<span class="pl-k">.</span>action(<span class="pl-k">new</span> <span class="pl-k">SqlCallable&lt;<span class="pl-smi">String</span>&gt;</span>() {
+    <span class="pl-k">@Override</span>
+    <span class="pl-k">public</span> <span class="pl-smi">String</span> <span class="pl-en">call</span>(<span class="pl-smi">Connection</span> <span class="pl-v">connection</span>) <span class="pl-k">throws</span> <span class="pl-smi">SQLException</span> {
+        <span class="pl-k">try</span> (<span class="pl-smi">PreparedStatement</span> preparedStatement <span class="pl-k">=</span> connection
+                .prepareStatement(sql)) {
+            <span class="pl-k">try</span> (<span class="pl-smi">ResultSet</span> resultSet <span class="pl-k">=</span> preparedStatement<span class="pl-k">.</span>executeQuery()) {
+                <span class="pl-k">return</span> getResultAsJson(resultSet);
+            } <span class="pl-k">catch</span> (<span class="pl-smi">IOException</span> e) {
+                <span class="pl-k">throw</span> <span class="pl-k">new</span> <span class="pl-smi">SQLNonTransientException</span>(e);
+            }
+        }
+    }
+});
+<span class="pl-c1">...</span></pre></div>
+
+<h2>
+<a id="building-and-releasing" class="anchor" href="#building-and-releasing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Building and Releasing</h2>
+
+<p>To compile and test the project issue the following commands:</p>
+
+<pre><code>mvn clean install
+</code></pre>
+
+<p>To release the project issue the following commands:</p>
+
+<pre><code>mvn release:clean
+mvn release:prepare
+mvn release:perform
+</code></pre>
+
+<h2>
+<a id="linking" class="anchor" href="#linking" aria-hidden="true"><span class="octicon octicon-link"></span></a>Linking</h2>
+
+<p>This project has been released to Maven Central; to use it simply include this
+in your Maven POM file:</p>
+
+<pre><code>&lt;dependency&gt;
+    &lt;groupId&gt;com.github.rbuck&lt;/groupId&gt;
+    &lt;artifactId&gt;java-retry&lt;/artifactId&gt;
+    &lt;version&gt;1.1&lt;/version&gt;
+    &lt;scope&gt;compile&lt;/scope&gt;
+&lt;/dependency&gt;
+</code></pre>
+
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
+
+<p>This project is Apache 2.0 licensed.</p>
       </section>
     </div>
 
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        <p class="copyright">Java Retry maintained by <a href="https://github.com/rbuck">rbuck</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+        <p class="copyright">Enterprise Retry 4J maintained by <a href="https://github.com/rbuck">rbuck</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
       </footer>
     </div>
 
