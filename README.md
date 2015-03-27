@@ -139,6 +139,26 @@ flow to enforce comprehensive resiliency for a subscriptions service.
 </spring:beans>
 ```
 
+Then the corresponding Java code is simply:
+
+```java
+...
+return retryPolicy.action(new SqlCallable<String>() {
+    @Override
+    public String call(Connection connection) throws SQLException {
+        try (PreparedStatement preparedStatement = connection
+                .prepareStatement(sql)) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return getResultAsJson(resultSet);
+            } catch (IOException e) {
+                throw new SQLNonTransientException(e);
+            }
+        }
+    }
+});
+...
+```
+
 ## Building and Releasing
 
 To compile and test the project issue the following commands:
