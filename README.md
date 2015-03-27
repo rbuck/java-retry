@@ -84,6 +84,8 @@ try {
 
 The following Spring Bean definition snippet was used in a Mule ESB
 flow to enforce comprehensive resiliency for a subscriptions service.
+The Spring Beans may be declared as singletons, and the code is thread
+safe.
 
 ```xml
 <spring:beans>
