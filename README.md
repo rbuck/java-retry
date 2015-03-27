@@ -166,15 +166,15 @@ return retryPolicy.action(new SqlCallable<String>() {
 To compile and test the project issue the following commands:
 
 ```shell
-    mvn clean install
+mvn clean install
 ```
 
 To release the project issue the following commands:
 
 ```shell
-    mvn release:clean
-    mvn release:prepare
-    mvn release:perform
+mvn release:clean
+mvn release:prepare
+mvn release:perform
 ```
 
 ## Linking
@@ -183,12 +183,12 @@ This project has been released to Maven Central; to use it simply include this
 in your Maven POM file:
 
 ```xml
-    <dependency>
-        <groupId>com.github.rbuck</groupId>
-        <artifactId>java-retry</artifactId>
-        <version>1.1</version>
-        <scope>compile</scope>
-    </dependency>
+<dependency>
+    <groupId>com.github.rbuck</groupId>
+    <artifactId>java-retry</artifactId>
+    <version>1.1</version>
+    <scope>compile</scope>
+</dependency>
 ```
 
 ## License
