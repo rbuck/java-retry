@@ -1,18 +1,27 @@
 <html>
-<head prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# object: http://ogp.me/ns/object# article: http://ogp.me/ns/article# profile: http://ogp.me/ns/profile#">
+<head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>
-        Enterprise Retry 4J
-    </title>
+    <title>Java Retry</title>
 </head>
 <body>
+
+<p>
+    A general purpose framework that lets developers make their applications more resilient by adding robust transient
+    fault handling logic.
+</p>
+
 <div>
     <article>
 
-        <h1>
-            <a name="enterprise-retry-4j" aria-hidden="true">Enterprise Retry 4J</a>
-        </h1>
+        <h2>
+            <a name="description" aria-hidden="true">Description</a>
+        </h2>
+
+        <p>
+            Transient faults are errors that occur because of some temporary condition such as network connectivity issues or
+            service unavailability. Typically, if you retry the operation that resulted in a transient error a short time later,
+            you find that the error has disappeared.
+        </p>
 
         <p>
             Lets developers make their applications more resilient by adding robust
@@ -58,27 +67,28 @@
 
         <div>
             <pre>
-// the detector may optionally be a singleton...
-TransientExceptionDetector detector = new TransientExceptionDetector() {
-    &commat;Override
-    public boolean isTransient(Exception e) {
-        // check exception type or content...
-    }
-};
-// the retry policy and strategies are allocated per transaction
-// and cannot be singletons, are typed...
-RetryPolicy&lt;Integer&gt; retryPolicy = new RetryPolicy<>(new ExponentialBackoff(), detector);
-int result = 0;
-try {
-    result = retryPolicy.action(new Callable&lt;Integer&gt;() {
+    // the detector may optionally be a singleton...
+    TransientExceptionDetector detector = new TransientExceptionDetector() {
         &commat;Override
-        public Integer call() throws Exception {
-            return 5;
+        public boolean isTransient(Exception e) {
+            // check exception type or content...
         }
-    });
-} catch (Exception e) {
-    // ... do something to handle or log ...
-}
+    };
+
+    // the retry policy and strategies are allocated per transaction
+    // and cannot be singletons, are typed...
+    RetryPolicy&lt;Integer&gt; retryPolicy = new RetryPolicy<>(new ExponentialBackoff(), detector);
+    int result = 0;
+    try {
+        result = retryPolicy.action(new Callable&lt;Integer&gt;() {
+            &commat;Override
+            public Integer call() throws Exception {
+                return 5;
+            }
+        });
+    } catch (Exception e) {
+        // ... do something to handle or log ...
+    }
             </pre>
         </div>
         <p>
@@ -100,22 +110,22 @@ try {
 
         <div>
             <pre>
-SqlTransactionContext sqlTransactionContext = new ...
-SqlRetryPolicy&lt;Integer&gt; sqlRetryPolicy = new SqlRetryPolicy<>(
-                new FixedInterval(1, 100), sqlTransactionContext);
-try {
-    result = sqlRetryPolicy.action(new SqlCallable&lt;Integer&gt;() {
-        &commat;Override
-        public Integer call(Connection connection) throws SQLException {
-            int result = ... from SQL result set ...
-            // critical: make sure to use try-with-resources to
-            // properly close all statements and result sets!
-            return result;
-        }
-    });
-} catch (Exception e) {
-    // ... do something to handle or log ...
-}
+    SqlTransactionContext sqlTransactionContext = new ...
+    SqlRetryPolicy&lt;Integer&gt; sqlRetryPolicy = new SqlRetryPolicy<>(
+            new FixedInterval(1, 100), sqlTransactionContext);
+    try {
+        result = sqlRetryPolicy.action(new SqlCallable&lt;Integer&gt;() {
+            &commat;Override
+            public Integer call(Connection connection) throws SQLException {
+                int result = ... from SQL result set ...
+                // critical: make sure to use try-with-resources to
+                // properly close all statements and result sets!
+                return result;
+            }
+        });
+    } catch (Exception e) {
+        // ... do something to handle or log ...
+    }
             </pre>
         </div>
     </article>

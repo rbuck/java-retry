@@ -1,0 +1,46 @@
+<body>
+
+<p>This package contains the core retry framework classes; this page
+    provides descriptions for the core classes, the key concepts, etc.</p>
+
+<p>There are four primary components to the retry framework:</p>
+
+<ul>
+    <li>detectors</li>
+    <li>strategies</li>
+    <li>policies</li>
+    <li>listeners</li>
+</ul>
+
+<h3>Transient Exception Detectors</h3>
+
+<p>Detectors distinguish transient exceptions from non-transient exceptions.
+    Transient exceptions are those that are retryable; non-transient exceptions
+    are those that, no matter how many times you retry, will invariantly yield
+    the same exceptions.</p>
+
+<p>Examples of transient exceptions are socket closed, lock conflicts, etc.
+    Examples of non-transient exceptions are syntax errors.</p>
+
+<h3>Retry Strategies</h3>
+
+<p>Retry strategies are algorithms that govern the behavior related to the
+    the application of retry, the amount of time between retries, whether or
+    how retry intervals change duration for each subsequent retry, etc.</p>
+
+<p>There are several retry strategies available:</p>
+
+<ul>
+    <li>random exponential back-off</li>
+    <li>fixed interval</li>
+    <li>incremental</li>
+</ul>
+
+<h3>Retry Policies</h3>
+
+<p>The framework can be easily extended to support retry for arbitrary use cases,
+    such as for database, and communications. Out of the box the framework provides
+    two retry policies, a generic retry Policy applicable to communications and
+    similar patterns, then a SqlRetryPolicy applicable to JDBC usage scenarios.</p>
+
+</body>
