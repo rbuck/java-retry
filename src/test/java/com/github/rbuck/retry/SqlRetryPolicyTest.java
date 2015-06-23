@@ -1,7 +1,11 @@
 package com.github.rbuck.retry;
 
 import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -54,13 +58,20 @@ public class SqlRetryPolicyTest {
             try {
                 Assert.assertFalse("no rollback", ((MockConnection) sqlTransactionContext.getConnection()).isRollbackCalled());
             } catch (SQLException ignore) {
-                if (exceptionType != MockConnection.ExceptionType.ConnectionCreateFail) {
+                if (exceptionType != MockConnection.ExceptionType.ConnectionCreateFail && exceptionType != MockConnection.ExceptionType.Interrupted) {
                     Assert.assertTrue("should not get here", false);
                 }
             }
         }
 
     }
+
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        protected void starting(Description description) {
+            System.out.println("Starting test: " + description.getMethodName());
+        }
+    };
 
     @Test
     public void testSqlCreateConnectionFailure() {
@@ -80,5 +91,10 @@ public class SqlRetryPolicyTest {
     @Test
     public void testStaleConnection() {
         internalTest(MockConnection.ExceptionType.StaleConnection);
+    }
+
+    @Test
+    public void testInterruptedException() {
+        internalTest(MockConnection.ExceptionType.Interrupted);
     }
 }

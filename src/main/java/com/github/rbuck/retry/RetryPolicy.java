@@ -40,6 +40,15 @@ public class RetryPolicy<V> {
                 return callable.call();
             } catch (Exception e) {
                 re = e;
+                if (Thread.interrupted()) {
+                    re = new InterruptedException(e.getMessage());
+                    break;
+                }
+//                if (Thread.currentThread().isInterrupted() || isInterruptTransitively(e)) {
+//                    Thread.currentThread().interrupt();
+//                    re = new InterruptedException(e.getMessage());
+//                    break;
+//                }
                 if (!transientExceptionDetector.isTransient(e)) {
                     break;
                 }
@@ -48,6 +57,22 @@ public class RetryPolicy<V> {
             retryState.delayRetry();
         } while (retryState.hasRetries());
         throw re;
+    }
+
+    /**
+     * Special case during shutdown.
+     *
+     * @param e possible instance of, or has cause for, an InterruptedException
+     * @return true if it is transitively an InterruptedException
+     */
+    private boolean isInterruptTransitively(Throwable e) {
+        do {
+            if (e instanceof InterruptedException) {
+                return true;
+            }
+            e = e.getCause();
+        } while (e != null);
+        return false;
     }
 
     private RetryEventListener[] retryListeners = new RetryEventListener[0];

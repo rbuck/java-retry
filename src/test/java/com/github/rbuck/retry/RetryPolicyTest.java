@@ -2,7 +2,11 @@ package com.github.rbuck.retry;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TestRule;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
 import java.util.concurrent.Callable;
 
@@ -15,6 +19,13 @@ public class RetryPolicyTest {
 
     private int retryCount = 0;
     private int eventCount = 0;
+
+    @Rule
+    public TestRule watcher = new TestWatcher() {
+        protected void starting(Description description) {
+            System.out.println("Starting test: " + description.getMethodName());
+        }
+    };
 
     @Test
     public void testRetryEventListenerIsNull() {
