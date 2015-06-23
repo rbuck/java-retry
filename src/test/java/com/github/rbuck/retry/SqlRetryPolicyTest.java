@@ -54,7 +54,7 @@ public class SqlRetryPolicyTest {
             try {
                 Assert.assertFalse("no rollback", ((MockConnection) sqlTransactionContext.getConnection()).isRollbackCalled());
             } catch (SQLException ignore) {
-                if (exceptionType != MockConnection.ExceptionType.ConnectionCreateFail && exceptionType != MockConnection.ExceptionType.Interrupted) {
+                if (exceptionType != MockConnection.ExceptionType.ConnectionCreateFail) {
                     Assert.assertTrue("should not get here", false);
                 }
             }
@@ -80,10 +80,5 @@ public class SqlRetryPolicyTest {
     @Test
     public void testStaleConnection() {
         internalTest(MockConnection.ExceptionType.StaleConnection);
-    }
-
-    @Test
-    public void testInterruptedException() {
-        internalTest(MockConnection.ExceptionType.Interrupted);
     }
 }

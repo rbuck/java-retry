@@ -17,17 +17,13 @@ public class MockConnection implements Connection {
         Nothing,
         ConnectionCreateFail,
         ConnectionLost,
-        StaleConnection, Interrupted, Rollback
+        StaleConnection, Rollback
     }
 
     public MockConnection(ExceptionType exceptionType) throws SQLException {
         this.exceptionType = exceptionType;
         if (this.exceptionType == ExceptionType.ConnectionCreateFail) {
             throw new SQLNonTransientConnectionException();
-        }
-        if (this.exceptionType == ExceptionType.Interrupted) {
-            Thread.currentThread().interrupt();
-            throw new SQLException(new InterruptedException());
         }
     }
 
