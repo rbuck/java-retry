@@ -41,7 +41,7 @@ public class RetryPolicy<V> {
             } catch (Exception e) {
                 re = e;
                 if (!transientExceptionDetector.isTransient(e)) {
-                    throw e;
+                    break;
                 }
             }
             enqueueRetryEvent(new RetryEvent(this, retryState, re));
