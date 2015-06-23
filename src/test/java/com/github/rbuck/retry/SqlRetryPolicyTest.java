@@ -44,6 +44,9 @@ public class SqlRetryPolicyTest {
             if (exceptionType == MockConnection.ExceptionType.ConnectionCreateFail) {
                 Assert.assertTrue("is non-transient connection exception", e instanceof SQLNonTransientConnectionException);
             }
+            if (exceptionType == MockConnection.ExceptionType.Interrupted) {
+                Assert.assertTrue("is interrupted exception", e instanceof InterruptedException);
+            }
         }
         if (exceptionType == MockConnection.ExceptionType.Nothing) {
             Assert.assertEquals("no exception", 5, result);
@@ -58,12 +61,14 @@ public class SqlRetryPolicyTest {
             try {
                 Assert.assertFalse("no rollback", ((MockConnection) sqlTransactionContext.getConnection()).isRollbackCalled());
             } catch (SQLException ignore) {
+                if (exceptionType == MockConnection.ExceptionType.Interrupted) {
+                    Thread.interrupted();
+                }
                 if (exceptionType != MockConnection.ExceptionType.ConnectionCreateFail && exceptionType != MockConnection.ExceptionType.Interrupted) {
                     Assert.assertTrue("should not get here", false);
                 }
             }
         }
-
     }
 
     @Rule

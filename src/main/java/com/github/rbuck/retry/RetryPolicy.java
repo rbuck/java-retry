@@ -30,7 +30,7 @@ public class RetryPolicy<V> {
      *
      * @param callable the action to perform under retry
      * @return the result of the action
-     * @throws Exception inspect cause to determine reason
+     * @throws Exception inspect cause to determine reason, or interrupt status
      */
     public V action(Callable<V> callable) throws Exception {
         Exception re;
@@ -40,15 +40,10 @@ public class RetryPolicy<V> {
                 return callable.call();
             } catch (Exception e) {
                 re = e;
-                if (Thread.interrupted()) {
+                if (Thread.interrupted() || isInterruptTransitively(e)) {
                     re = new InterruptedException(e.getMessage());
                     break;
                 }
-//                if (Thread.currentThread().isInterrupted() || isInterruptTransitively(e)) {
-//                    Thread.currentThread().interrupt();
-//                    re = new InterruptedException(e.getMessage());
-//                    break;
-//                }
                 if (!transientExceptionDetector.isTransient(e)) {
                     break;
                 }
